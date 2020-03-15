@@ -10,27 +10,23 @@ def parse_commands():
 	pages = {}
 	for item in objs:
 		if item['page'] == 'PageSelection':
-			pages = item['labels']
+			pages = [p.replace('Control Page ', '') for p in item['labels']]
 		else:
 			kvp[item['page']] = item['labels']
 	
-	#print(kvp)
 	
-			
-	op('pages').clear()
-	op('pages').appendRows(sorted(kvp))
+	
 
+	op('pages').clear()
 	op('commands').clear()
-	[op('commands').appendRow(kvp[key]) for key in sorted(kvp)]
-	
-	op('page_selector/page_commands').clear()
-	
-	pages.sort()
-		
-	op('page_selector/page_commands').appendRows(pages)
+	for p in pages:
+		if p in kvp:
+			op('pages').appendRow(p)
+			op('commands').appendRow(kvp[p])
+
 	op('page_selector/selector_generator').allowCooking = True
 	op('page_selector/selector_generator').par.recreateall.pulse()
-
+	
 if len(raw_text) < 1:
 	print('failed to load json command file')
 	pass
